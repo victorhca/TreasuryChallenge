@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using TreasuryChallenge.Domain;
+using TreasuryChallenge.Utils;
 
 namespace TreasuryChallenge
 {
@@ -24,41 +26,11 @@ namespace TreasuryChallenge
 
             var t = Stopwatch.StartNew();
 
-            Write(inputInt);
+            var codes = Code.GetRandomStrings(ALLOWED_CHARS, QTY_CHARACTERS_CODE, inputInt);
+            Archive.Write(codes);
 
             t.Stop();
             System.Console.WriteLine(t.ElapsedMilliseconds);
-        }
-
-        static void Write(int lines)
-        {
-            var strings = GetRandomStrings(ALLOWED_CHARS, QTY_CHARACTERS_CODE, lines);
-            File.WriteAllText("aleatory-file.txt", String.Join("\n", strings));
-            System.Console.WriteLine($"A file with {strings.Count()} lines was generated.");
-        }
-
-        private static IEnumerable<string> GetRandomStrings(
-            string allowedChars,
-            int length,
-            int lines)
-        {
-            var rng = new Random();
-            char[] chars = new char[length + 1];
-            int setLength = allowedChars.Length;
-            char letter;
-            while (lines-- > 0)
-            {
-                for (int i = 0; i < length; ++i)
-                {
-                    do
-                    {
-                        letter = allowedChars[rng.Next(setLength)];
-                    } while (i == 0 ? chars[i] == letter : chars[i - 1] == letter);
-
-                    chars[i] = letter;
-                }
-                yield return new string(chars, 0, length);
-            }
         }
     }
 }
